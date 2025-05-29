@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriTime AI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            padding: 36px 32px 32px 32px;
+            border-radius: 28px;
+            width: 420px;
+            display: grid;
+            box-shadow: 0 8px 32px rgba(52, 152, 219, 0.18), 0 1.5px 6px rgba(44, 62, 80, 0.08);
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+            border: 2px solid #6dd5ed;
+        }
+        h2 {
+            font-size: 28px;
+            color: #2361a9;
+            margin-bottom: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            animation: slideDown 0.8s ease-in-out;
+        }
+        label {
+            display: block;
+            font-size: 15px;
+            color: #3d4f5c;
+            text-align: left;
+            font-weight: 600;
+            margin-top: 12px;
+            margin-bottom: 3px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid #a2d5f2;
+            border-radius: 10px;
+            font-size: 16px;
+            background: #f6fbff;
+            color: #2361a9;
+            outline: none;
+            transition: 0.3s;
+            margin-bottom: 4px;
+        }
+        input::placeholder {
+            color: #aab8c2;
+            opacity: 1;
+        }
+        input:focus {
+            background: #eaf6fb;
+            border-color: #2361a9;
+            box-shadow: 0 0 0 2px #a2d5f2;
+            transform: scale(1.03);
+        }
+        .submit-btn {
+            background: linear-gradient(45deg, #36d1c4, #2361a9);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 14px;
+            margin-top: 18px;
+            box-shadow: 0 4px 16px rgba(54, 209, 196, 0.10);
+            letter-spacing: 1px;
+        }
+        .submit-btn:hover {
+            background: linear-gradient(45deg, #2361a9, #36d1c4);
+            transform: scale(1.04);
+            box-shadow: 0px 6px 18px rgba(54, 209, 196, 0.15);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .min-div {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        .min-div > div {
+            flex: 1;
+        }
+        .error-message, .success-message {
+            margin-top: 16px;
+            margin-bottom: 0;
+            font-size: 15px;
+            font-weight: 600;
+            text-align: center;
+            border-radius: 8px;
+            padding: 10px 0;
+            letter-spacing: 0.5px;
+        }
+        .error-message {
+            color: #fff;
+            background: linear-gradient(90deg, #e74c3c, #fd746c);
+        }
+        .success-message {
+            color: #fff;
+            background: linear-gradient(90deg, #36d1c4, #2361a9);
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>AgriTime AI</h2>
+        <h2>Crop Recommendation</h2>
+        <form id="cropForm" action="/process" method="POST" autocomplete="off">
+            <div class="min-div">
+                <div>
+                    <label for="N">N:</label>
+                    <input type="text" id="N" name="N" placeholder="0 to 200 kg/ha">
+                </div>
+                <div>
+                    <label for="P">P:</label>
+                    <input type="text" id="P" name="P" placeholder=" 0 to 100 (mg/kg or ppm)">
+                </div>
+                <div>
+                    <label for="K">K:</label>
+                    <input type="text" id="K" name="K" placeholder="0 to 400 (mg/kg or ppm)">
+                </div>
+            </div>
+            <label for="temperature">Temperature:</label>
+            <input type="text" id="temperature" name="temperature" placeholder="8–45 (°C)">
+            <label for="humidity">Humidity:</label>
+            <input type="text" id="humidity" name="humidity" placeholder="20-80 %">
+            <label for="ph">pH:</label>
+            <input type="text" id="ph" name="ph" placeholder="3.5–10">
+            <label for="rainfall">Rainfall:</label>
+            <input type="text" id="rainfall" name="rainfall" placeholder="20–300 (mm)">
+            <div id="message"></div>
+            <button type="submit" class="submit-btn">Submit</button>
+            <h2>{{result}}</h2>
+        </form>
+    </div>
+    <script>
+        // Define the valid ranges for each input
+        const ranges = {
+            N: {min: 0, max: 200},
+            P: {min: 5, max: 100},
+            K: {min: 5, max: 400},
+            temperature: {min: 8, max: 45},
+            humidity: {min: 10, max: 100},
+            ph: {min: 3.5, max: 10},
+            rainfall: {min: 20, max: 300}
+        };
+        document.getElementById('cropForm').addEventListener('submit', function(e){
+            let message = '';
+            let isError = false;
+            const fields = ['N','P','K','temperature','humidity','ph','rainfall'];
+            for(let field of fields){
+                const val = document.getElementById(field).value.trim();
+                if(val === ''){
+                    message = 'Fill all values';
+                    isError = true;
+                    break;
+                }
+                let num = Number(val);
+                if(isNaN(num)){
+                    message = field.charAt(0).toUpperCase() + field.slice(1) + ' must be a valid number';
+                    isError = true;
+                    break;
+                }
+                let {min, max} = ranges[field];
+                if(num < min || num > max){
+                    message = field.charAt(0).toUpperCase() + field.slice(1) + ` should be between ${min} and ${max}`;
+                    isError = true;
+                    break;
+                }
+            }
+            const msgDiv = document.getElementById('message');
+            if(isError){
+                e.preventDefault();
+                msgDiv.innerHTML = '<div class="error-message">'+message+'</div>';
+            } else {
+                msgDiv.innerHTML = '<div class="success-message">Values are valid. Submitting...</div>';
+            }
+        });
+    </script>
+</body>
+</html>
