@@ -1,4 +1,6 @@
-# 🌱 AgriTime AI
+# 🌱 AgriTime AI : Precision Planting Predictions for Small Farmers
+
+
 
 **AgriTime AI** is a machine learning–based crop recommendation system that helps farmers and agricultural experts make better **data-driven decisions**.  
 It analyzes soil and environmental parameters to recommend the most suitable crop for cultivation.
@@ -56,6 +58,17 @@ fig: Backend Performance Metrics and Model Evaluation Console Output
 <img width="669" height="1004" alt="image" src="https://github.com/user-attachments/assets/94633297-1067-4d24-bb10-d1753bd6ba45" />
 
 fig: Initial Input Screen / User Data Collection Interface
+
+---
+
+## 📝 License
+
+This project is licensed under the **MIT License** – see the [LICENSE](LICENSE) file in the repository root for details.
+
+---
+
+**Created by  Laxmidhar Penta**
+
 
 
 
